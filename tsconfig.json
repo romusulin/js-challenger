@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "sourceMap":  true,
+    "module": "commonjs",
+    "allowJs": true,
+    "noImplicitAny": false,
+    "skipLibCheck": true,
+    "lib": ["es2017"],
+    "target": "es2017",
+    "baseUrl": ".",
+    "outDir": "dist"
+  },
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
