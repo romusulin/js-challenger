@@ -1,24 +1,24 @@
 {
-  "name": "js-challenger",
-  "version": "1.0.0",
-  "description": "",
-  "main": "",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/romusulin/js-challenger.git"
-  },
-  "author": "Roko Musulin",
-  "license": "ISC",
-  "homepage": "https://github.com/romusulin/js-challenger#readme",
-  "dependencies": {
-    "@types/node": "^12.6.8",
-    "typescript": "^3.5.3"
-  },
-  "engines": {
-    "node": "10.15.3",
-    "npm": "5.6.0"
-  }
+	"name": "js-challenger",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"compile": "tsc -p tsconfig.json",
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"docker-postgres": "./scripts/run-docker-postgres.sh",
+		"stop-docker-postgres": "./scripts/run-docker-postgres.sh stop",
+		"migrate-db": "npx sequelize db:migrate",
+		"demigrate-db": "npx sequelize db:migrate:undo:all"
+	},
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"@types/sequelize": "^4.28.4",
+		"envalid": "^5.0.0",
+		"npx": "^10.2.0",
+		"pg": "^7.12.0",
+		"sequelize": "^4.28.4",
+		"sequelize-cli": "^5.5.0"
+	}
 }
