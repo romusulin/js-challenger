@@ -9,16 +9,20 @@
 		"docker-postgres": "./scripts/run-docker-postgres.sh",
 		"stop-docker-postgres": "./scripts/run-docker-postgres.sh stop",
 		"migrate-db": "npx sequelize db:migrate",
-		"demigrate-db": "npx sequelize db:migrate:undo:all"
+		"demigrate-db": "npx sequelize db:migrate:undo:all",
+		"start": "npm run compile && node ./dist/app.js"
 	},
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
 		"@types/sequelize": "^4.28.4",
-		"envalid": "^5.0.0",
+		"bcrypt": "^3.0.6",
+		"envalid": "^4.0.0",
+		"log4js": "^4.5.1",
 		"npx": "^10.2.0",
-		"pg": "^7.12.0",
+		"pg": "^6.4.2",
 		"sequelize": "^4.28.4",
-		"sequelize-cli": "^5.5.0"
+		"sequelize-cli": "^5.5.0",
+		"typescript": "^3.5.3"
 	}
 }
