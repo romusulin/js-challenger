@@ -5,24 +5,30 @@
 	"main": "index.js",
 	"scripts": {
 		"compile": "tsc -p tsconfig.json",
-		"test": "echo \"Error: no test specified\" && exit 1",
 		"docker-postgres": "./scripts/run-docker-postgres.sh",
 		"stop-docker-postgres": "./scripts/run-docker-postgres.sh stop",
 		"migrate-db": "npx sequelize db:migrate",
 		"demigrate-db": "npx sequelize db:migrate:undo:all",
-		"start": "npm run compile && node ./dist/app.js"
+		"start": "npm run compile && node ./dist/app.js",
+		"test": "./node_modules/.bin/mocha ---require ts-node/register ./test/src/*.ts"
 	},
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
+		"@types/mocha": "^5.2.7",
 		"@types/sequelize": "^4.28.4",
 		"bcrypt": "^3.0.6",
+		"chai": "^4.2.0",
 		"envalid": "^4.0.0",
 		"log4js": "^4.5.1",
+		"mocha": "^6.2.1",
 		"npx": "^10.2.0",
 		"pg": "^6.4.2",
 		"sequelize": "^4.28.4",
 		"sequelize-cli": "^5.5.0",
-		"typescript": "^3.5.3"
+		"supertest": "^4.0.2",
+		"ts-node": "^8.4.1",
+		"typescript": "^3.6.4",
+		"wait-on": "^3.3.0"
 	}
 }
