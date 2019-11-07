@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { app } from '../../src/app';
 import * as request from 'supertest';
-import { CreateUserRow } from '../../src/db/helpers/user-db-helper';
+import { CreateUserRow, UserRow } from '../../src/db/helpers/user-db-helper';
 import { getModel, TABLE, db } from '../../src/db/db';
 import { cleanDatabase } from '../test-utils';
 
@@ -11,8 +11,8 @@ describe('Request endpoints', () => {
 		password: 'hunter2'
 	};
 
-	beforeEach(() => {
-		cleanDatabase();
+	beforeEach(async () => {
+		await cleanDatabase();
 	});
 
 	after(async () => {
@@ -71,6 +71,39 @@ describe('Request endpoints', () => {
 
 			const allUsers = await getModel(TABLE.USER).findAll();
 			expect(allUsers.length).to.equal(0);
+		});
+	});
+
+	describe('Login', () => {
+		const MOCK_USER: CreateUserRow = {
+			username: 'mock',
+			password: 'hunter2'
+		};
+
+		async function createMockUser() {
+			await request(app)
+			.post('/register')
+			.send(MOCK_USER)
+			.set('Accept', 'application/json');
+		}
+
+		it('should receive a verifiable token with correct credentials', async () => {
+			await createMockUser();
+			const successResponse = await request(app)
+			.post('/login')
+			.send(MOCK_USER)
+			.set('Accept', 'application/json');
+
+			expect(successResponse.statusCode).to.equal(200);
+
+			const token = successResponse.body.token;
+			expect(successResponse.body.token).to.not.equal(undefined);
+
+			const verificationResponse = await request(app)
+			.post('/verify')
+			.set('Authorization', `JWT ${token}`);
+
+			expect(verificationResponse.statusCode).to.equal(200);
 		});
 	});
 });

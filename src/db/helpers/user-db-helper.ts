@@ -4,7 +4,7 @@ import { getModel, TABLE } from '../db';
 export namespace UserDbHelper {
 	const seqModel: Model<UserRow, UserRow> = getModel(TABLE.USER) as Model<UserRow, UserRow>;
 
-	async function findByUsername(username: string): Promise<UserRow> {
+	export async function findByUsername(username: string): Promise<UserRow> {
 		const user = await seqModel.findOne({
 			where: { username }
 		});
