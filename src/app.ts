@@ -4,6 +4,7 @@ import { Request, Response, NextFunction } from 'express';
 import { UserDbHelper } from './db/helpers/user-db-helper';
 import { verifyUserPassword } from "./security/password-utils";
 import { AUTHORIZATION_SCHEMA, createToken, verifyToken } from './security/auth-utils';
+import { User } from './db/models/user';
 
 enum HTTP_CODES {
 	HTTP_OK = 200,
@@ -72,7 +73,7 @@ app.post('/register', async (req: Request, res: Response, next: NextFunction) =>
 		res.json('Username is already taken');
 	} else {
 		try {
-			const te = await UserDbHelper.create(registeringUser);
+			const te = await User.create(registeringUser);
 			res.status(HTTP_CODES.HTTP_OK_CREATED);
 		} catch (err) {
 			res.status(HTTP_CODES.HTTP_SERVER_ERROR);

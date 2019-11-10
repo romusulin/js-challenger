@@ -1,12 +1,12 @@
 import { expect } from 'chai';
 import { app } from '../../src/app';
 import * as request from 'supertest';
-import { CreateUserRow, UserRow } from '../../src/db/helpers/user-db-helper';
-import { getModel, TABLE, db } from '../../src/db/db';
+import { db } from '../../src/db/db';
 import { cleanDatabase } from '../test-utils';
+import { User } from '../../src/db/models/user';
 
 describe('Request endpoints', () => {
-	const MOCK_USER: CreateUserRow = {
+	const MOCK_USER = {
 		username: 'test',
 		password: 'hunter2'
 	};
@@ -28,7 +28,7 @@ describe('Request endpoints', () => {
 
 			expect(response.statusCode).to.equal(201);
 
-			const allUsers = await getModel(TABLE.USER).findAll();
+			const allUsers = await User.findAll();
 			expect(allUsers.length).to.equal(1);
 			expect(allUsers[0].username).to.equal(MOCK_USER.username);
 			expect(allUsers[0].password).to.not.equal(undefined);
@@ -50,7 +50,7 @@ describe('Request endpoints', () => {
 
 			expect(failedResponse.statusCode).to.equal(400);
 
-			const allUsers = await getModel(TABLE.USER).findAll();
+			const allUsers = await User.findAll();
 			expect(allUsers.length).to.equal(1);
 		});
 
@@ -69,13 +69,13 @@ describe('Request endpoints', () => {
 
 			expect(rubbishBodyResponse.statusCode).to.equal(400);
 
-			const allUsers = await getModel(TABLE.USER).findAll();
+			const allUsers = await User.findAll();
 			expect(allUsers.length).to.equal(0);
 		});
 	});
 
 	describe('Login', () => {
-		const MOCK_USER: CreateUserRow = {
+		const MOCK_USER = {
 			username: 'mock',
 			password: 'hunter2'
 		};

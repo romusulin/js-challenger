@@ -1,6 +1,5 @@
-import { getModel, TABLE } from '../src/db/db';
+import { User } from '../src/db/models/user';
 
 export async function cleanDatabase() {
-	const userModel = getModel(TABLE.USER);
-	return userModel.truncate({ cascade: true });
+	return User.truncate({ cascade: true });
 }
