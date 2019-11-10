@@ -10,7 +10,8 @@
 		"migrate-db": "npx sequelize db:migrate",
 		"demigrate-db": "npx sequelize db:migrate:undo:all",
 		"start": "npm run compile && node ./dist/app.js",
-		"test": "./node_modules/.bin/mocha ---require ts-node/register ./test/src/*.ts"
+		"mocha": "./node_modules/.bin/mocha ---require ts-node/register ./test/src/*.ts",
+		"test": "./test/run.sh"
 	},
 	"author": "",
 	"license": "ISC",
