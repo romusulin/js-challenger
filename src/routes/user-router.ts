@@ -6,7 +6,7 @@ import { User } from '../db/models/user';
 import { Request, Response, NextFunction } from 'express';
 import { HTTP_CODES } from '../app';
 
-export const userRouter: express.Router = new express.Router();
+export const userRouter: express.Router = express.Router();
 
 userRouter.post('/login', async (req: Request, res: Response) => {
 	const loginInformation: { username: string, password: string } = req.body;
