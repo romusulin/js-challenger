@@ -4,6 +4,7 @@ import * as request from 'supertest';
 import { db } from '../../src/db/db';
 import { cleanDatabase } from '../test-utils';
 import { User } from '../../src/db/models/user';
+import { Challenge } from '../../src/db/models/challenge';
 
 describe('Request endpoints', () => {
 	const MOCK_USER = {
@@ -104,6 +105,98 @@ describe('Request endpoints', () => {
 			.set('Authorization', `JWT ${token}`);
 
 			expect(verificationResponse.statusCode).to.equal(200);
+		});
+	});
+
+	describe('Admin', () => {
+		const MOCK_ADMIN_USER = {
+			username: 'test',
+			password: 'hunter2',
+			isAdmin: true
+		};
+
+		async function getAuthorizationHeader() {
+			await request(app)
+			.post('/register')
+			.send(MOCK_ADMIN_USER)
+			.set('Accept', 'application/json');
+
+			const loginResponse = await request(app)
+			.post('/login')
+			.send(MOCK_ADMIN_USER)
+			.set('Accept', 'application/json');
+
+			return 'JWT ' + loginResponse.body.token;
+		}
+
+		it ('should insert and update the challenge', async () => {
+			const authHeader = await getAuthorizationHeader();
+			const mockChallenge = {
+				name: 'Test',
+				description: 'Test description',
+				test: 'undefined',
+				isActive: true
+			};
+
+			const response = await request(app)
+			.post('/admin/upsertchallenge')
+			.send(mockChallenge)
+			.set('Accept', 'application/json')
+			.set('Authorization', authHeader);
+
+			expect(response.status).to.equal(200);
+
+			let allChallenges = await Challenge.findAll();
+			expect(allChallenges.length).to.equal(1);
+			expect(allChallenges[0].name).to.equal(mockChallenge.name);
+			expect(allChallenges[0].description).to.equal(mockChallenge.description);
+			expect(allChallenges[0].id).to.equal(response.body.id);
+
+			const newDescription = 'Test #2';
+			mockChallenge.description = newDescription;
+
+			await request(app)
+			.post('/admin/upsertchallenge/' + allChallenges[0].id)
+			.send(mockChallenge)
+			.set('Accept', 'application/json')
+			.set('Authorization', authHeader);
+
+			allChallenges = await Challenge.findAll();
+			expect(allChallenges.length).to.equal(1);
+			expect(allChallenges[0].name).to.equal(mockChallenge.name);
+			expect(allChallenges[0].description).to.equal(newDescription);
+		});
+
+		async function getNonAdminAuthorizationHeader() {
+			await request(app)
+				.post('/register')
+				.send(MOCK_USER)
+				.set('Accept', 'application/json');
+
+			const loginResponse = await request(app)
+				.post('/login')
+				.send(MOCK_USER)
+				.set('Accept', 'application/json');
+
+			return 'JWT ' + loginResponse.body.token;
+		}
+
+		it('should not authorize a non admin to update a challenge', async () => {
+			const authHeader = await getNonAdminAuthorizationHeader();
+			const mockChallenge = {
+				name: 'Test',
+				description: 'Test description',
+				test: 'undefined',
+				isActive: true
+			};
+
+			const response = await request(app)
+			.post('/admin/upsertchallenge')
+			.send(mockChallenge)
+			.set('Accept', 'application/json')
+			.set('Authorization', authHeader);
+
+			expect(response.status).to.equal(401);
 		});
 	});
 });

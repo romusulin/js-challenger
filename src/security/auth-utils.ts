@@ -54,4 +54,5 @@ export interface VerificationResult {
 
 export interface Token {
 	username: string;
+	isAdmin?: boolean;
 }

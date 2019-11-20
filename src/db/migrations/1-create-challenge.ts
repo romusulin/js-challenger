@@ -1,25 +1,29 @@
 import { TABLE } from '../db';
 
-const userMigration = {
+const challengeMigration = {
 	up: async (queryInterface, DataType) => {
-		await queryInterface.createTable(TABLE.USER, {
+		await queryInterface.createTable(TABLE.CHALLENGE, {
 			id: {
 				type: DataType.INTEGER,
 				allowNull: false,
 				autoIncrement: true,
 				primaryKey: true
 			},
-			username: {
+			name: {
 				type: DataType.STRING,
 				allowNull: false
 			},
-			password: {
+			description: {
 				type: DataType.STRING,
 				allowNull: false
 			},
-			isAdmin: {
+			test: {
+				type: DataType.TEXT,
+				allowNull: false
+			},
+			isActive: {
 				type: DataType.BOOLEAN,
-				allowNull: true
+				allowNull: false
 			},
 			createdAt: {
 				allowNull: false,
@@ -32,8 +36,8 @@ const userMigration = {
 		});
 	},
 	down: (queryInterface) => {
-		return queryInterface.dropTable(TABLE.USER, { cascade: true });
+		return queryInterface.dropTable(TABLE.CHALLENGE, { cascade: true });
 	}
 };
 
-export = userMigration;
+export = challengeMigration;

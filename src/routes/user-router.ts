@@ -1,10 +1,11 @@
 import * as express from 'express';
 import { UserDbHelper } from '../db/helpers/user-db-helper';
 import { verifyUserPassword } from '../security/password-utils';
-import { AUTHORIZATION_SCHEMA, createToken, verifyToken } from '../security/auth-utils';
+import { createToken } from '../security/auth-utils';
 import { User } from '../db/models/user';
 import { Request, Response, NextFunction } from 'express';
 import { HTTP_CODES } from '../app';
+import { verifyTokenMiddleware } from '../middleware/verify-token';
 
 export const userRouter: express.Router = express.Router();
 
@@ -16,7 +17,7 @@ userRouter.post('/login', async (req: Request, res: Response) => {
 	} else {
 		const dbUser = await UserDbHelper.findByUsername(loginInformation.username);
 		if (dbUser && await verifyUserPassword(loginInformation.password, dbUser.password)) {
-			const token = createToken({ username: dbUser.username });
+			const token = createToken({ username: dbUser.username, isAdmin: !!dbUser.isAdmin });
 			res.json({ token: token });
 			res.status(HTTP_CODES.HTTP_OK);
 		} else {
@@ -28,30 +29,9 @@ userRouter.post('/login', async (req: Request, res: Response) => {
 	res.send();
 });
 
-userRouter.post('/verify', (req: Request, res: Response) => {
-	res.status(HTTP_CODES.HTTP_BAD_REQUEST);
-
-	const authorizationHeader = req.header('Authorization');
-	if (!authorizationHeader) {
-		res.json('Verification requires the authorization header to be set');
-		return;
-	}
-
-	const [ schema, encodedToken ] = authorizationHeader.split(' ');
-	if (schema !== AUTHORIZATION_SCHEMA) {
-		res.json('Incorrect authorization schema');
-		return;
-	}
-
-	const verificationResult = verifyToken(encodedToken);
-	if (!verificationResult.success) {
-		res.json(`Token verification failed: ${verificationResult.error}`);
-	} else {
-		res.status(HTTP_CODES.HTTP_OK)
-		res.json('Token verification successful')
-	}
-
-	res.send();
+userRouter.post('/verify', verifyTokenMiddleware, (req: Request, res: Response) => {
+	res.status(HTTP_CODES.HTTP_OK)
+	res.json('Token verification successful');
 });
 
 userRouter.post('/register', async (req: Request, res: Response, next: NextFunction) => {

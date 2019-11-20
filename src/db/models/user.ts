@@ -11,6 +11,7 @@ export class User extends Model {
 	public id?: string;
 	public username: string;
 	public password: string;
+	public isAdmin?: boolean;
 }
 
 User.init({
@@ -28,6 +29,10 @@ User.init({
 	password: {
 		type: DataTypes.STRING,
 		allowNull: false
+	},
+	isAdmin: {
+		type: DataTypes.BOOLEAN,
+		allowNull: true
 	}
 }, {
 	freezeTableName: true,

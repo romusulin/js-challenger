@@ -3,7 +3,8 @@ import { DbLogger} from '../logger';
 import { Options, Sequelize, Model, ModelCtor } from 'sequelize';
 
 export enum TABLE {
-	USER = "User"
+	USER = 'User',
+	CHALLENGE = 'Challenge'
 };
 
 let logging: ((sql: string) => void) | boolean = false;
