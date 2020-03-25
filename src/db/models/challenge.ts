@@ -3,8 +3,10 @@ import { db } from '../db';
 
 export class Challenge extends Model {
 	public id?: string;
-	public username: string;
-	public password: string;
+	public name: string;
+	public description: string;
+	public test: string;
+	public isActive: boolean;
 }
 
 Challenge.init({

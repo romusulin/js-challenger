@@ -2,6 +2,7 @@ import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import { userRouter } from './routes/user-router';
 import { adminRouter } from './routes/admin-router';
+import { challengeRouter } from './routes/challenge-router';
 
 export enum HTTP_CODES {
 	HTTP_OK = 200,
@@ -16,3 +17,4 @@ export const app: express.Express = express();
 app.use(bodyParser.json());
 app.use('/', userRouter);
 app.use('/admin', adminRouter);
+app.use('/challenge', challengeRouter);
