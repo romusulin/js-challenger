@@ -10,5 +10,5 @@ trap stopPostgres EXIT
 npm run compile
 npm run docker-postgres
 ./node_modules/wait-on/bin/wait-on tcp:5432 && npm run migrate-db
-g
+
 npm run mocha || exit 1
