@@ -22,7 +22,7 @@ describe('Simple challenge executor tests', () => {
 	});
 
 	it('should throw an error on incorrect solution', () => {
-		const correctSolution = 'function solution(num) { return num * num * num; }';
+		const incorrectSolution = 'function solution(num) { return num * num * num; }';
 		const testCases: TestCase[] = [
 			{
 				input: [ 2 ],
@@ -36,7 +36,7 @@ describe('Simple challenge executor tests', () => {
 			}
 		];
 		try {
-			executeChallenge(correctSolution, testCases);
+			executeChallenge(incorrectSolution, testCases);
 			assert(false, 'An error should have been thrown');
 		} catch (err) {
 			expect(err.message).to.include('Calling the function with');
