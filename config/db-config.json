@@ -2,7 +2,7 @@
   "development": {
     "url": "postgres://postgres:password@localhost:5432/postgres",
     "dialect": "postgres",
-    "operatorsAliases": false,
+    "operatorsAliases": 0,
     "dialectOptions": {
       "ssl": false,
       "multipleStatements": true
@@ -11,7 +11,7 @@
   "production": {
     "use_env_variable": "DATABASE_URL",
     "dialect": "postgres",
-    "operatorsAliases": false,
+    "operatorsAliases": 0,
     "dialectOptions": {
       "ssl": true,
       "multipleStatements": true

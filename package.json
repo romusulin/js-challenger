@@ -5,13 +5,14 @@
 	"main": "index.js",
 	"scripts": {
 		"compile": "tsc -p tsconfig.json",
-		"docker-postgres": "./scripts/run-docker-postgres.sh",
-		"stop-docker-postgres": "./scripts/run-docker-postgres.sh stop",
+		"prepare-environment": "npm run stop-postgres && npm run start-postgres && wait-on tcp:5432 -l -i 1000 -d 1000 && NODE_ENV=development npm run migrate-db",
+		"start-postgres": "docker-compose up -d",
+		"stop-postgres": "docker-compose rm --stop --force",
 		"migrate-db": "npx sequelize db:migrate",
 		"demigrate-db": "npx sequelize db:migrate:undo:all",
 		"start": "npm run compile && node ./dist/app.js",
-		"mocha": "./node_modules/.bin/mocha ---require ts-node/register ./test/src/*.ts",
-		"test": "./test/run.sh"
+		"mocha": "./node_modules/.bin/mocha --require ts-node/register ./test/src/*.ts",
+		"test": "npm run prepare-environment && npm run mocha --exit"
 	},
 	"author": "",
 	"license": "ISC",

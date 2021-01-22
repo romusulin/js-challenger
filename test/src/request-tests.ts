@@ -27,9 +27,18 @@ async function getNonAdminAuthorizationHeader() {
 	return 'JWT ' + loginResponse.body.token;
 }
 
+let server;
 describe('Request endpoints', () => {
+	before((done) => {
+		server = app.listen(3000, (err) => {
+			if (err) { return done(err); }
+			done();
+		})
+	});
+
 	after(async () => {
 		await db.close();
+		server.close();
 	});
 
 	describe('Registration', () => {
