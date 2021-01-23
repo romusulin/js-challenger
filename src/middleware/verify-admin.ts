@@ -4,9 +4,7 @@ import { HTTP_CODES } from '../app';
 export function verifyAdminPrivilege(req: Request, res: Response, next: NextFunction) {
 	const token = res.locals.token;
 	if (!token.isAdmin) {
-		res.status(HTTP_CODES.HTTP_UNAUTHORIZED);
-		res.json('Insufficient permissions.');
-		return;
+		return res.status(HTTP_CODES.HTTP_UNAUTHORIZED).json('Insufficient permissions.');
 	}
 
 	next();
