@@ -1,8 +1,6 @@
-import { TABLE } from '../db';
-
 const userMigration = {
 	up: async (queryInterface, DataType) => {
-		await queryInterface.createTable(TABLE.USER, {
+		await queryInterface.createTable('User', {
 			id: {
 				type: DataType.INTEGER,
 				allowNull: false,
@@ -32,8 +30,8 @@ const userMigration = {
 		});
 	},
 	down: (queryInterface) => {
-		return queryInterface.dropTable(TABLE.USER, { cascade: true });
+		return queryInterface.dropTable('Challenge', { cascade: true });
 	}
 };
 
-export = userMigration;
+module.exports = userMigration;

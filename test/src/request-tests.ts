@@ -2,11 +2,9 @@ import { expect } from 'chai';
 import { app, HTTP_CODES } from '../../src/app';
 import * as request from 'supertest';
 import { db } from '../../src/db/db';
-import { cleanDatabase } from '../test-utils';
-import { User } from '../../src/db/models/user';
 import { ASSERT_OPERATIONS } from '../../src/challenges/assertion';
 import { TestCase } from '../../src/challenges/test-case';
-import { Challenge } from '../../src/db/models/challenge';
+import { Challenge, User, UserChallenge } from '../../src/db/models';
 
 const MOCK_USER = {
 	username: 'test',
@@ -43,7 +41,8 @@ describe('Request endpoints', () => {
 
 	describe('Registration', () => {
 		beforeEach(async () => {
-			await cleanDatabase();
+			await User.truncate({ cascade: true });
+			await Challenge.truncate({ cascade: true });
 		});
 
 		it('should insert the user into postgres', async () => {
@@ -102,7 +101,8 @@ describe('Request endpoints', () => {
 
 	describe('Login', () => {
 		beforeEach(async () => {
-			await cleanDatabase();
+			await User.truncate({ cascade: true });
+			await Challenge.truncate({ cascade: true });
 		});
 
 		const MOCK_USER = {
@@ -139,7 +139,8 @@ describe('Request endpoints', () => {
 
 	describe('Admin', () => {
 		beforeEach(async () => {
-			await cleanDatabase();
+			await User.truncate({ cascade: true });
+			await Challenge.truncate({ cascade: true });
 		});
 
 		const MOCK_ADMIN_USER = {
@@ -220,6 +221,9 @@ describe('Request endpoints', () => {
 	});
 
 	describe('Challenge', () => {
+		beforeEach(async () => {
+			return UserChallenge.truncate();
+		});
 		async function setupMockChallenge(): Promise<string> {
 			const testCases: TestCase[] = [
 				{
@@ -251,32 +255,70 @@ describe('Request endpoints', () => {
 			challengeId = await setupMockChallenge();
 		});
 
-		it('should fail the challenge', async () => {
+		it('should update userChallenges depending on result', async () => {
 			const invalidSolution = `const solution = (n) => { return n*n+1; }`;
 			const response = await request(app)
 			.post('/challenge/submit/' + challengeId)
-			.send({
-				code: invalidSolution
-			})
+			.send({ code: invalidSolution })
 			.set('Accept', 'application/json')
 			.set('Authorization', authHeader);
 
-			expect(response.status).to.equal(HTTP_CODES.HTTP_BAD_REQUEST);
+			expect(response.status).to.equal(HTTP_CODES.HTTP_OK);
 			expect(response.body).to.contain('Test execution failed: ');
+
+			let userChallenges = await UserChallenge.findAll();
+			expect(userChallenges.length).to.equal(1);
+			expect(userChallenges[0].challengeId).to.equal(challengeId);
+			expect(userChallenges[0].solution).to.equal(invalidSolution);
+			expect(userChallenges[0].isSolved).to.equal(false);
+
+			// next invalid request should only change the solution in database
+			const newInvalidSolution = 'const solution = (n) => { return n*n+2; }';
+			await request(app)
+			.post('/challenge/submit/' + challengeId)
+			.send({ code: newInvalidSolution })
+			.set('Accept', 'application/json')
+			.set('Authorization', authHeader);
+
+			userChallenges = await UserChallenge.findAll();
+			expect(userChallenges.length).to.equal(1);
+			expect(userChallenges[0].challengeId).to.equal(challengeId);
+			expect(userChallenges[0].solution).to.equal(newInvalidSolution);
+			expect(userChallenges[0].isSolved).to.equal(false);
+
+			// next valid request should set success to true with new solution
+			const validSolution = 'const solution = (n) => { return n*n; }';
+			await request(app)
+				.post('/challenge/submit/' + challengeId)
+				.send({ code: validSolution })
+				.set('Accept', 'application/json')
+				.set('Authorization', authHeader);
+
+			userChallenges = await UserChallenge.findAll();
+			expect(userChallenges.length).to.equal(1);
+			expect(userChallenges[0].challengeId).to.equal(challengeId);
+			expect(userChallenges[0].solution).to.equal(validSolution);
+			expect(userChallenges[0].isSolved).to.equal(true);
 		});
 
-		it('should pass the challenge', async () => {
-			const invalidSolution = `const solution = (n) => { return n*n; }`;
+		it('should pass the challenge and add userChallenge record', async () => {
+			const validSolution = `const solution = (n) => { return n*n; }`;
 			const response = await request(app)
 				.post('/challenge/submit/' + challengeId)
 				.send({
-					code: invalidSolution
+					code: validSolution
 				})
 				.set('Accept', 'application/json')
 				.set('Authorization', authHeader);
 
 			expect(response.status).to.equal(HTTP_CODES.HTTP_OK);
-			expect(response.body).to.contain('Passed ');
+			expect(response.body).to.contain('All test cases passed');
+
+			const userChallenges = await UserChallenge.findAll();
+			expect(userChallenges.length).to.equal(1);
+			expect(userChallenges[0].challengeId).to.equal(challengeId);
+			expect(userChallenges[0].solution).to.equal(validSolution);
+			expect(userChallenges[0].isSolved).to.equal(true);
 		});
 	});
 });

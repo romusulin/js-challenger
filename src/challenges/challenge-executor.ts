@@ -1,12 +1,20 @@
 import { VM } from 'vm2';
 import { TestCase } from './test-case';
 import { ASSERTION_FUNCTIONS } from './assertion';
+import { Challenge } from '../db/models';
 
 export enum KEYWORDS {
 	RESERVED_FUNCTION_NAME = 'solution'
 }
 
-export function executeChallenge(userCode: string, testCases: TestCase[]) {
+export interface ExecutionResult {
+	challengeId: number;
+	isSuccess: boolean;
+	error?: Error;
+}
+
+export function executeChallenge(userCode: string, challenge: Pick<Challenge, 'id' | 'test'>) {
+	const parsedTestCases: TestCase[] = JSON.parse(challenge.test);
 	const vmOptions = {
 		timeout: 1000,
 		external: false,
@@ -16,10 +24,22 @@ export function executeChallenge(userCode: string, testCases: TestCase[]) {
 	};
 
 	const vm = new VM(vmOptions);
-	const testCode = `assertTestCases(${KEYWORDS.RESERVED_FUNCTION_NAME}, ${JSON.stringify(testCases)});`;
+	const testCode = `assertTestCases(${KEYWORDS.RESERVED_FUNCTION_NAME}, ${JSON.stringify(parsedTestCases)});`;
 	const fullCode = [ userCode, testCode ].join('\n');
 
-	vm.run(fullCode);
+	let result: ExecutionResult = {
+		challengeId: challenge.id,
+		isSuccess: true
+	};
+	try {
+		vm.run(fullCode);
+	} catch (err) {
+		result.isSuccess = false;
+		result.error = err;
+
+	}
+
+	return result;
 }
 
 function assertTestCases(func: any, testCases: TestCase[]): void {

@@ -1,4 +1,4 @@
-import { User } from '../db/models/user';
+import { User } from '../db/models';
 import { verifyUserPassword } from '../security/password-utils';
 import { createToken } from '../security/auth-utils';
 

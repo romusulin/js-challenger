@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { HTTP_CODES } from '../app';
-import { Challenge } from '../db/models/challenge';
+import { Challenge } from '../db/models';
 import { ResponseWithLocals } from './custom-response';
 
 export async function verifyChallengeSubmission(req: Request, res: ResponseWithLocals, next: NextFunction) {

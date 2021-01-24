@@ -1,14 +1,15 @@
 import { NextFunction, Request, Response } from 'express';
 import { HTTP_CODES } from '../app';
-import { UserDbHelper } from '../db/helpers/user-db-helper';
 import { ResponseWithLocals } from './custom-response';
+import { User } from '../db/models';
 
 export async function verifyRegistration(req: Request, res: Response, next: NextFunction) {
-	const registeringUser: { username: string, password: string} = req.body;
-
-	if (!registeringUser || !registeringUser.username || !registeringUser.password) {
+	const { username, password} = req.body;
+	if (!req.body || !username || !password) {
 		return res.status(HTTP_CODES.HTTP_BAD_REQUEST).json('Registration body must contain username and password fields.');
-	} else if (await UserDbHelper.existsByUsername(registeringUser.username)) {
+	}
+	const doesUserExist = Boolean(await User.findOne({ where: { username }}));
+	if (doesUserExist) {
 		return res.status(HTTP_CODES.HTTP_BAD_REQUEST).json('Username is already taken');
 	}
 
@@ -21,7 +22,7 @@ export async function verifyLogin(req: Request, res: ResponseWithLocals, next: N
 		return res.status(HTTP_CODES.HTTP_BAD_REQUEST).json('Login body must contain username and password fields.');
 	}
 
-	const foundUser = await UserDbHelper.findByUsername(loginInformation.username);
+	const foundUser = await User.findOne({ where: { username: loginInformation.username }});
 	if (foundUser) {
 		res.locals.user = foundUser;
 		res.locals.loginInformation = loginInformation;

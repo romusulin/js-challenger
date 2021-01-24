@@ -18,7 +18,8 @@ describe('Simple challenge executor tests', () => {
 				operation: ASSERT_OPERATIONS.EQUALS
 			}
 		];
-		executeChallenge(correctSolution, testCases);
+		const result = executeChallenge(correctSolution,  { test: JSON.stringify(testCases), id: 0 });
+		expect(result.isSuccess).to.equal(true);
 	});
 
 	it('should throw an error on incorrect solution', () => {
@@ -35,13 +36,11 @@ describe('Simple challenge executor tests', () => {
 				operation: ASSERT_OPERATIONS.EQUALS
 			}
 		];
-		try {
-			executeChallenge(incorrectSolution, testCases);
-			assert(false, 'An error should have been thrown');
-		} catch (err) {
-			expect(err.message).to.include('Calling the function with');
-			expect(err.message).to.include('[2]');
-			expect(err.message).to.include('4');
-		}
+
+		const result = executeChallenge(incorrectSolution, { test: JSON.stringify(testCases), id: 0 });
+		expect(result.isSuccess).to.equal(false);
+		expect(result.error.message.includes('Calling the function with')).to.equal(true);
+		expect(result.error.message.includes('[2]')).to.equal(true);
+		expect(result.error.message.includes('4')).to.equal(true);
 	});
 });

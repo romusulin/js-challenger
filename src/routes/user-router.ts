@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import { HTTP_CODES } from '../app';
 import { verifyTokenMiddleware } from '../middleware/verify-token';
 import { verifyLogin, verifyRegistration } from '../middleware/verify-user';
-import { createUser, login } from '../services/user-service';
+import { createUser, login } from '../controllers/user-controller';
 import { ResponseWithLocals } from '../middleware/custom-response';
 
 export const userRouter: express.Router = express.Router();
@@ -28,7 +28,7 @@ userRouter.post('/register', verifyRegistration, async (req: Request, res: Respo
 		await createUser(req.body);
 		return res.status(HTTP_CODES.HTTP_OK_CREATED).send();
 	} catch (err) {
-		res.status(HTTP_CODES.HTTP_SERVER_ERROR).json(err).send();
+		return res.status(HTTP_CODES.HTTP_SERVER_ERROR).json(err).send();
 	}
 });
 
