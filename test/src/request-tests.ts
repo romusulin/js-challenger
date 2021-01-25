@@ -169,6 +169,7 @@ describe('Request endpoints', () => {
 				name: 'Test',
 				description: 'Test description',
 				test: 'undefined',
+				points: 1,
 				isActive: true
 			};
 
@@ -183,6 +184,7 @@ describe('Request endpoints', () => {
 			let allChallenges = await Challenge.findAll();
 			expect(allChallenges.length).to.equal(1);
 			expect(allChallenges[0].name).to.equal(mockChallenge.name);
+			expect(allChallenges[0].points).to.equal(mockChallenge.points);
 			expect(allChallenges[0].description).to.equal(mockChallenge.description);
 			expect(allChallenges[0].id).to.equal(response.body.id);
 
@@ -242,6 +244,7 @@ describe('Request endpoints', () => {
 				name: 'Square the number',
 				description: 'Write a function which receives a number, and returns a squared number',
 				test: JSON.stringify(testCases),
+				points: 1,
 				isActive: true
 			};
 			return (await Challenge.create(mockChallenge)).id;

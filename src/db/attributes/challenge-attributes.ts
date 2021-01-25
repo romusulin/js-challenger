@@ -12,6 +12,10 @@ export const challengeAttributes = {
 		type: DataTypes.STRING,
 		allowNull: false
 	},
+	points: {
+		type: DataTypes.INTEGER,
+		allowNull: false
+	},
 	description: {
 		type: DataTypes.STRING,
 		allowNull: false

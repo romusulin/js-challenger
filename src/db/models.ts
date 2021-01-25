@@ -15,6 +15,7 @@ const commonInitOptions = {
 export class Challenge extends Model {
 	public id?: number;
 	public name: string;
+	public points: number;
 	public description: string;
 	public test: string;
 	public isActive: boolean;
