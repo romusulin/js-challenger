@@ -15,6 +15,6 @@ export enum HTTP_CODES {
 
 export const app: express.Express = express();
 app.use(bodyParser.json());
-app.use('/', userRouter);
+app.use('/user', userRouter);
 app.use('/admin', adminRouter);
 app.use('/challenge', challengeRouter);

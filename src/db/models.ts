@@ -1,9 +1,9 @@
 import { Model } from 'sequelize';
 import { db } from './db';
-import { hashUserPassword } from '../security/password-utils';
 import { hashUserPasswordHook, userAttributes } from './attributes/user-attributes';
 import { challengeAttributes } from './attributes/challenge-attributes';
 import { userChallengeAttributes } from './attributes/user-challenge-attributes';
+import {leaderboardAttributes} from "./attributes/leaderboard-attributes";
 
 const commonInitOptions = {
 	freezeTableName: true,
@@ -44,3 +44,17 @@ UserChallenge.init(userChallengeAttributes, commonInitOptions);
 User.hasMany(UserChallenge, { foreignKey: 'userId', as: 'UserChallenges' });
 User.belongsToMany(Challenge, { through: 'UserChallenge', foreignKey: 'userId', as: 'Challenges'});
 Challenge.belongsToMany(User, { through: 'UserChallenge', foreignKey: 'challengeId', as: 'Users' });
+
+export class Leaderboard extends Model {
+	public rank: number;
+	public username: string
+	public solvedChallenges: number;
+	public totalPoints: number;
+}
+const leaderboardInitOptions = {
+	...commonInitOptions,
+	createdAt: false,
+	updatedAt: false,
+	modelName: 'leaderboard_view'
+};
+Leaderboard.init(leaderboardAttributes, leaderboardInitOptions);

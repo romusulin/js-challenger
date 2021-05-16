@@ -1,12 +1,8 @@
 import Settings from '../settings';
 import { DbLogger} from '../logger';
 import { Options, Sequelize } from 'sequelize';
-
-export enum TABLE {
-	USER = 'User',
-	CHALLENGE = 'Challenge',
-	USER_CHALLENGE = 'UserChallenge'
-};
+import * as pg from 'pg';
+pg.defaults.parseInt8 = true;
 
 let logging: ((sql: string) => void) | boolean = false;
 

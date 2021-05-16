@@ -5,7 +5,7 @@
 	"main": "index.js",
 	"scripts": {
 		"compile": "tsc -p tsconfig.json",
-		"prepare-environment": "npm run stop-postgres && npm run start-postgres && wait-on tcp:5432 -l -i 1000 -d 1000 && NODE_ENV=development npm run migrate-db",
+		"prepare-environment": "npm run stop-postgres && npm run start-postgres && wait-on tcp:5432 -l -i 1000 -d 1000 && cross-env NODE_ENV=development npm run migrate-db",
 		"start-postgres": "docker-compose up -d",
 		"stop-postgres": "docker-compose rm --stop --force",
 		"migrate-db": "npx sequelize db:migrate",
@@ -22,6 +22,7 @@
 		"@types/mocha": "^5.2.7",
 		"bcrypt": "^5.0.0",
 		"chai": "^4.2.0",
+		"cross-env": "^7.0.3",
 		"envalid": "^4.0.0",
 		"express": "^4.17.1",
 		"jsonwebtoken": "^8.5.1",

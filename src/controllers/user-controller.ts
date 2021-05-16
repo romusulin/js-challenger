@@ -1,4 +1,4 @@
-import { User } from '../db/models';
+import {Leaderboard, User} from '../db/models';
 import { verifyUserPassword } from '../security/password-utils';
 import { createToken } from '../security/auth-utils';
 
@@ -13,4 +13,10 @@ export async function login(dbUser: User, loginInformation: {username: string, p
 	}
 
 	return createToken({ username: dbUser.username, isAdmin: !!dbUser.isAdmin });
+}
+
+export async function getUserDetails(username: string) {
+	return Leaderboard.findOne({
+		where: { username }
+	});
 }
