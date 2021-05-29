@@ -1,5 +1,5 @@
 import * as express from 'express';
-import { verifyTokenMiddleware } from '../middleware/verify-token';
+import { verifyAuthorizationTokenMiddleware } from '../middleware/verify-token';
 import { Request } from 'express';
 import { HTTP_CODES } from '../app';
 import { verifyChallengeSubmission } from '../middleware/verify-challenge-submission';
@@ -8,7 +8,7 @@ import { ResponseWithLocals } from '../middleware/custom-response';
 
 export const challengeRouter: express.Router = express.Router();
 
-challengeRouter.use(verifyTokenMiddleware);
+challengeRouter.use(verifyAuthorizationTokenMiddleware);
 
 challengeRouter.post('/submit/:challengeid?', verifyChallengeSubmission, async (req: Request, res: ResponseWithLocals) => {
 	// challenge and token info inserted into res.locals

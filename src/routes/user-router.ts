@@ -1,8 +1,8 @@
 import * as express from 'express';
 import { Request, Response } from 'express';
 import { HTTP_CODES } from '../app';
-import { verifyTokenMiddleware } from '../middleware/verify-token';
-import { verifyLogin, verifyRegistration } from '../middleware/verify-user';
+import { verifyAuthorizationTokenMiddleware } from '../middleware/verify-token';
+import { verifyLoginBody, verifyRegistrationBody } from '../middleware/verify-user';
 import {
 	changePassword,
 	createUser,
@@ -11,12 +11,12 @@ import {
 	resetPassword
 } from '../services/user-service';
 import { ResponseWithLocals } from '../middleware/custom-response';
-import { verifyResetPassword} from "../middleware/verify-forgot-password";
-import { verifyChangePassword } from '../middleware/verify-change-password';
+import { verifyResetPasswordBody} from "../middleware/verify-forgot-password";
+import { verifyChangePasswordBody } from '../middleware/verify-change-password';
 
 export const userRouter: express.Router = express.Router();
 
-userRouter.post('/login', verifyLogin, async (req: Request, res: ResponseWithLocals) => {
+userRouter.post('/login', verifyLoginBody, async (req: Request, res: ResponseWithLocals) => {
 	// found user and login info are inserted into req.locals
 	try {
 		const token = await login(res.locals.user, res.locals.loginInformation);
@@ -26,12 +26,12 @@ userRouter.post('/login', verifyLogin, async (req: Request, res: ResponseWithLoc
 	}
 });
 
-userRouter.post('/verify', verifyTokenMiddleware, (req: Request, res: Response) => {
+userRouter.post('/verify', verifyAuthorizationTokenMiddleware, (req: Request, res: Response) => {
 	res.status(HTTP_CODES.HTTP_OK)
 	res.json('Token verification successful');
 });
 
-userRouter.post('/register', verifyRegistration, async (req: Request, res: Response) => {
+userRouter.post('/register', verifyRegistrationBody, async (req: Request, res: Response) => {
 	try {
 		await createUser(req.body);
 		return res.status(HTTP_CODES.HTTP_OK_CREATED).send();
@@ -40,7 +40,7 @@ userRouter.post('/register', verifyRegistration, async (req: Request, res: Respo
 	}
 });
 
-userRouter.get('/details', verifyTokenMiddleware, async (req: Request, res: Response) => {
+userRouter.get('/details', verifyAuthorizationTokenMiddleware, async (req: Request, res: Response) => {
 	try {
 		const username = res.locals.token.username;
 		const userDetails = await getUserDetails(username);
@@ -50,7 +50,7 @@ userRouter.get('/details', verifyTokenMiddleware, async (req: Request, res: Resp
 	}
 });
 
-userRouter.get('/forgotpassword', verifyResetPassword, async (req: Request, res: ResponseWithLocals) => {
+userRouter.get('/forgotpassword', verifyResetPasswordBody, async (req: Request, res: ResponseWithLocals) => {
 	try {
 		await resetPassword(req.body.email);
 
@@ -60,7 +60,7 @@ userRouter.get('/forgotpassword', verifyResetPassword, async (req: Request, res:
 	}
 });
 
-userRouter.post('/changepassword', verifyChangePassword, async (req: Request, res: ResponseWithLocals) => {
+userRouter.post('/changepassword', verifyChangePasswordBody, async (req: Request, res: ResponseWithLocals) => {
 	try {
 		const { email, token, newPassword } = req.body;
 		await changePassword(email, token, newPassword);

@@ -4,7 +4,7 @@ import { AUTHORIZATION_SCHEMA } from '../security/auth-utils';
 import { verifyToken } from '../security/auth-utils';
 import { ResponseWithLocals } from './custom-response';
 
-export function verifyTokenMiddleware(req: Request, res: ResponseWithLocals, next: NextFunction) {
+export function verifyAuthorizationTokenMiddleware(req: Request, res: ResponseWithLocals, next: NextFunction) {
 	const authorizationHeader = req.header('Authorization');
 	if (!authorizationHeader) {
 		return res.status(HTTP_CODES.HTTP_BAD_REQUEST).json('Verification requires the authorization header to be set');
