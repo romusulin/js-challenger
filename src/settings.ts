@@ -42,6 +42,30 @@ const env = envalid.cleanEnv(process.env, {
 	DISABLE_DATABASE_SSL: bool({
 		default: true,
 		desc: 'Disable database ssl connections'
+	}),
+	EMAIL_HOST: str({
+		default: 'smtp.ethereal.email',
+		desc: 'URL of the email server'
+	}),
+	EMAIL_PORT: num({
+		default: 587,
+		desc: 'Port of the email server'
+	}),
+	EMAIL_SECURE: bool({
+		default: false,
+		desc: 'Secure parameter for nodemailer transporter object'
+	}),
+	EMAIL_AUTH_JSON: str({
+		default: '',
+		desc: 'Authentication JSON for nodemailer transporter object'
+	}),
+	EMAIL_SENDER: str({
+		default: 'JS Challenger <js@challeng.er>',
+		desc: 'Email of the application'
+	}),
+	RESET_PASSWORD_EXPIRY_MS: num({
+		default: 60 * 60 * 1000,
+		desc: 'Number of miliseconds on which the reset token is expired'
 	})
 });
 

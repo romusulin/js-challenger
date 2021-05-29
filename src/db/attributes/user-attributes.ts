@@ -4,13 +4,17 @@ import { User } from '../models';
 
 export const userAttributes = {
 	id: {
-		type: DataTypes.STRING,
+		type: DataTypes.INTEGER,
 		allowNull: false,
 		unique: true,
 		autoIncrement: true,
 		primaryKey: true
 	},
 	username: {
+		type: DataTypes.STRING,
+		allowNull: false
+	},
+	email: {
 		type: DataTypes.STRING,
 		allowNull: false
 	},

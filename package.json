@@ -11,8 +11,8 @@
 		"migrate-db": "npx sequelize db:migrate",
 		"demigrate-db": "npx sequelize db:migrate:undo:all",
 		"start": "npm run compile && node ./src/app.js",
-		"mocha": "./node_modules/.bin/mocha --require ts-node/register ./test/src/*.ts",
-		"test": "npm run prepare-environment && npm run mocha --exit"
+		"mocha": "./node_modules/.bin/mocha --exit --require ts-node/register ./test/src/*.ts",
+		"test": "npm run prepare-environment && npm run mocha"
 	},
 	"author": "",
 	"license": "ISC",
@@ -28,6 +28,7 @@
 		"jsonwebtoken": "^8.5.1",
 		"log4js": "^4.5.1",
 		"mocha": "^6.2.1",
+		"nodemailer": "^6.6.0",
 		"npx": "^10.2.0",
 		"pg": "^6.4.2",
 		"sequelize": "^5.15.1",

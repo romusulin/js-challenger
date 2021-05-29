@@ -3,8 +3,16 @@ import { Request, Response } from 'express';
 import { HTTP_CODES } from '../app';
 import { verifyTokenMiddleware } from '../middleware/verify-token';
 import { verifyLogin, verifyRegistration } from '../middleware/verify-user';
-import {createUser, getUserDetails, login} from '../controllers/user-controller';
+import {
+	changePassword,
+	createUser,
+	getUserDetails,
+	login,
+	resetPassword
+} from '../services/user-service';
 import { ResponseWithLocals } from '../middleware/custom-response';
+import { verifyResetPassword} from "../middleware/verify-forgot-password";
+import { verifyChangePassword } from '../middleware/verify-change-password';
 
 export const userRouter: express.Router = express.Router();
 
@@ -37,6 +45,27 @@ userRouter.get('/details', verifyTokenMiddleware, async (req: Request, res: Resp
 		const username = res.locals.token.username;
 		const userDetails = await getUserDetails(username);
 		return res.status(HTTP_CODES.HTTP_OK).json(userDetails);
+	} catch (err) {
+		return res.status(HTTP_CODES.HTTP_SERVER_ERROR).json(err);
+	}
+});
+
+userRouter.get('/forgotpassword', verifyResetPassword, async (req: Request, res: ResponseWithLocals) => {
+	try {
+		await resetPassword(req.body.email);
+
+		return res.status(HTTP_CODES.HTTP_OK).json(`Password reset token has been sent to the provided email.`);
+	} catch (err) {
+		return res.status(HTTP_CODES.HTTP_SERVER_ERROR).json(err);
+	}
+});
+
+userRouter.post('/changepassword', verifyChangePassword, async (req: Request, res: ResponseWithLocals) => {
+	try {
+		const { email, token, newPassword } = req.body;
+		await changePassword(email, token, newPassword);
+
+		return res.status(HTTP_CODES.HTTP_OK).json(`Password changed.`);
 	} catch (err) {
 		return res.status(HTTP_CODES.HTTP_SERVER_ERROR).json(err);
 	}

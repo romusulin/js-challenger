@@ -1,14 +1,14 @@
 import { expect } from 'chai';
 import { app, HTTP_CODES } from '../../src/app';
 import * as request from 'supertest';
-import { db } from '../../src/db/db';
 import { ASSERT_OPERATIONS } from '../../src/challenges/assertion';
 import { TestCase } from '../../src/challenges/test-case';
 import { Challenge, User, UserChallenge } from '../../src/db/models';
 
 const MOCK_USER = {
 	username: 'test',
-	password: 'hunter2'
+	password: 'hunter2',
+	email: 'test@domain.com'
 };
 
 async function getNonAdminAuthorizationHeader() {
@@ -25,20 +25,7 @@ async function getNonAdminAuthorizationHeader() {
 	return 'JWT ' + loginResponse.body.token;
 }
 
-let server;
 describe('Request endpoints', () => {
-	before((done) => {
-		server = app.listen(3000, (err) => {
-			if (err) { return done(err); }
-			done();
-		})
-	});
-
-	after(async () => {
-		await db.close();
-		server.close();
-	});
-
 	describe('User', () => {
 		describe('Registration', () => {
 			beforeEach(async () => {
@@ -108,7 +95,8 @@ describe('Request endpoints', () => {
 
 			const MOCK_USER = {
 				username: 'mock',
-				password: 'hunter2'
+				password: 'hunter2',
+				email: 'mock@domain.com'
 			};
 
 			async function createMockUser() {
@@ -148,6 +136,7 @@ describe('Request endpoints', () => {
 		const MOCK_ADMIN_USER = {
 			username: 'test',
 			password: 'hunter2',
+			email: 'test@domain.com',
 			isAdmin: true
 		};
 

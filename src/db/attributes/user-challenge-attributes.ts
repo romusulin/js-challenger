@@ -2,7 +2,7 @@ import { DataTypes } from 'sequelize';
 
 export const userChallengeAttributes = {
 	id: {
-		type: DataTypes.STRING,
+		type: DataTypes.INTEGER,
 		allowNull: false,
 		unique: true,
 		autoIncrement: true,

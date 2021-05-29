@@ -3,6 +3,7 @@ import * as bodyParser from 'body-parser';
 import { userRouter } from './routes/user-router';
 import { adminRouter } from './routes/admin-router';
 import { challengeRouter } from './routes/challenge-router';
+import { db } from './db/db';
 
 export enum HTTP_CODES {
 	HTTP_OK = 200,
@@ -18,3 +19,5 @@ app.use(bodyParser.json());
 app.use('/user', userRouter);
 app.use('/admin', adminRouter);
 app.use('/challenge', challengeRouter);
+
+app.on('close', async () => await db.close());

@@ -3,7 +3,7 @@ import { verifyTokenMiddleware } from '../middleware/verify-token';
 import { Request } from 'express';
 import { HTTP_CODES } from '../app';
 import { verifyChallengeSubmission } from '../middleware/verify-challenge-submission';
-import { executeSubmission, getLeaderboardData } from '../controllers/challenge-controller';
+import { executeSubmission, getLeaderboardData } from '../services/challenge-service';
 import { ResponseWithLocals } from '../middleware/custom-response';
 
 export const challengeRouter: express.Router = express.Router();

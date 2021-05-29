@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { Challenge, User, UserChallenge } from '../../src/db/models';
-import { getLeaderboardData, LeaderboardData } from '../../src/controllers/challenge-controller';
+import { getLeaderboardData, LeaderboardData } from '../../src/services/challenge-service';
 
 describe('Leaderboard tests', () => {
 	before(async () => {
@@ -24,9 +24,10 @@ describe('Leaderboard tests', () => {
 	it('should fetch leaderboard data', async () => {
 		let users: Pick<User, 'id' | 'username' | 'password' | 'isAdmin'>[] = [];
 		for (let i = 0; i < 75; i++) {
-			const user: Pick<User, 'id' | 'username' | 'password' | 'isAdmin'> = {
+			const user: Pick<User, 'id' | 'username' | 'password' | 'isAdmin' | 'email'> = {
 				username: `user-${i}`,
 				password: 'pw',
+				email: `email${i}@domain.com`,
 				isAdmin: false
 			};
 

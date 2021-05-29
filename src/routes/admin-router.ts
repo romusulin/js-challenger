@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import { verifyTokenMiddleware } from '../middleware/verify-token';
 import { verifyAdminPrivilege } from '../middleware/verify-admin';
 import { HTTP_CODES } from '../app';
-import { upsertChallenge } from '../controllers/admin-controller';
+import { upsertChallenge } from '../services/admin-service';
 
 export const adminRouter: express.Router = express.Router();
 

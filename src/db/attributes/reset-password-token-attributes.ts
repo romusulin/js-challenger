@@ -1,6 +1,6 @@
 import { DataTypes } from 'sequelize';
 
-export const challengeAttributes = {
+export const resetPasswordTokenAttributes = {
 	id: {
 		type: DataTypes.INTEGER,
 		allowNull: false,
@@ -8,24 +8,15 @@ export const challengeAttributes = {
 		autoIncrement: true,
 		primaryKey: true
 	},
-	name: {
+	token: {
 		type: DataTypes.STRING,
 		allowNull: false
 	},
-	points: {
+	userId: {
 		type: DataTypes.INTEGER,
 		allowNull: false
 	},
-	description: {
-		type: DataTypes.STRING,
-		allowNull: false
-	},
-	test: {
-		type: DataTypes.TEXT,
-		allowNull: false
-	},
-	isActive: {
-		type: DataTypes.BOOLEAN,
-		allowNull: false
+	isConsumed: {
+		type: DataTypes.BOOLEAN
 	}
 };
