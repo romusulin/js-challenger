@@ -102,10 +102,8 @@ export async function getChallenges(page: number) {
 	}));
 
 	const challengesResponse: ChallengeData = {
-		challenges: results.map((r) => {
-
-		}),
 		pageRows: results.length,
+		challenges,
 		hasMore,
 		page
 	};
