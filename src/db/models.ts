@@ -49,7 +49,7 @@ User.hasMany(UserChallenge, {foreignKey: 'userId', as: 'UserChallenges'});
 User.belongsToMany(Challenge, {through: 'UserChallenge', foreignKey: 'userId', as: 'Challenges'});
 Challenge.belongsToMany(User, {through: 'UserChallenge', foreignKey: 'challengeId', as: 'Users'});
 
-export class Leaderboard extends Model {
+export class  Leaderboard extends Model {
 	public rank: number;
 	public username: string;
 	public solvedChallenges: number;

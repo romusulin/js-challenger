@@ -245,6 +245,9 @@ describe('Request endpoints', () => {
 		let challengeId: string;
 
 		before(async () => {
+			await Challenge.truncate({
+				cascade: true
+			});
 			authHeader = await getNonAdminAuthorizationHeader();
 			challengeId = await setupMockChallenge();
 		});
@@ -339,6 +342,20 @@ describe('Request endpoints', () => {
 			expect(detailsBody.username).to.equal(MOCK_USER.username);
 			expect(detailsBody.solvedChallenges).to.equal(1);
 			expect(detailsBody.totalPoints).to.equal(1);
+		});
+
+		it('lists all chalenges', async () => {
+			const response = await request(app)
+			.get('/challenge/list')
+			.set('Accept', 'application/json')
+			.set('Authorization', authHeader)
+
+			expect(response.body.challenges.length).to.equal(1);
+			expect(response.body.challenges[0].name).to.equal('Square the number');
+			expect(response.body.challenges[0].points).to.equal(1);
+			expect(response.body.hasMore).to.equal(false);
+			expect(response.body.pageRows).to.equal(1);
+			expect(response.body.page).to.equal(0);
 		});
 	});
 });

@@ -3,7 +3,7 @@ import { verifyAuthorizationTokenMiddleware } from '../middleware/verify-token';
 import { Request } from 'express';
 import { HTTP_CODES } from '../app';
 import { verifyChallengeSubmission } from '../middleware/verify-challenge-submission';
-import { executeSubmission, getLeaderboardData } from '../services/challenge-service';
+import { executeSubmission, getChallenges, getLeaderboardData } from '../services/challenge-service';
 import { ResponseWithLocals } from '../middleware/custom-response';
 
 export const challengeRouter: express.Router = express.Router();
@@ -26,7 +26,14 @@ challengeRouter.post('/submit/:challengeid?', verifyChallengeSubmission, async (
 
 challengeRouter.get('/leaderboard/:page?', async (req: Request, res: ResponseWithLocals) => {
 	const page = Number(req.params.page) || 0;
-	const response = getLeaderboardData(page);
+	const response = await getLeaderboardData(page);
+
+	return res.status(HTTP_CODES.HTTP_OK).json(response);
+});
+
+challengeRouter.get('/list/:page?', async (req: Request, res: ResponseWithLocals) => {
+	const page = Number(req.params.page) || 0;
+	const response = await getChallenges(page);
 
 	return res.status(HTTP_CODES.HTTP_OK).json(response);
 });

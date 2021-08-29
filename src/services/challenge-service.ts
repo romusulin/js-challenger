@@ -1,8 +1,15 @@
-import {Challenge, Leaderboard as LeaderboardModel, User, UserChallenge} from '../db/models';
+import {
+	Challenge as ChallengeModel,
+	Leaderboard as LeaderboardModel,
+	User,
+	UserChallenge
+} from '../db/models';
 import { executeChallenge } from '../challenges/challenge-executor';
-const LEADERBOARD_QUERY_LIMIT = 50;
 
-export async function executeSubmission(username: string, challenge: Challenge, userCode: string) {
+const LEADERBOARD_QUERY_LIMIT = 50;
+const CHALLENGE_QUERY_LIMIT = 50;
+
+export async function executeSubmission(username: string, challenge: ChallengeModel, userCode: string) {
 	let result = executeChallenge(userCode, challenge);
 	const user = await User.findOne({
 		where: { username },
@@ -34,11 +41,14 @@ export async function executeSubmission(username: string, challenge: Challenge, 
 	}
 }
 
-export interface LeaderboardData {
-	leaderboard: LeaderboardModel[],
+interface Paginated {
 	hasMore: boolean;
 	page: number;
 	pageRows: number;
+}
+
+export interface LeaderboardData extends Paginated {
+	leaderboard: LeaderboardModel[]
 }
 
 export async function getLeaderboardData(page: number) {
@@ -63,4 +73,42 @@ export async function getLeaderboardData(page: number) {
 	};
 
 	return leaderboard;
+}
+
+export interface ChallengeData extends Paginated {
+	challenges: ChallengeModel;
+}
+
+export async function getChallenges(page: number) {
+	const offset = page * LEADERBOARD_QUERY_LIMIT;
+	const limit = LEADERBOARD_QUERY_LIMIT + 1;
+	const results = await ChallengeModel.findAll({
+		where: { isActive: true},
+		limit,
+		offset
+	});
+
+	let hasMore = false;
+	if (results.length > LEADERBOARD_QUERY_LIMIT) {
+		hasMore = true;
+		results.pop();
+	}
+
+	const challenges = results.map(({id, name, description, points}) => ({
+		id,
+		name,
+		description,
+		points
+	}));
+
+	const challengesResponse: ChallengeData = {
+		challenges: results.map((r) => {
+
+		}),
+		pageRows: results.length,
+		hasMore,
+		page
+	};
+
+	return challengesResponse;
 }
