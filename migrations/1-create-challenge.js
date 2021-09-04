@@ -9,19 +9,19 @@ const challengeMigration = {
 			},
 			name: {
 				type: DataType.STRING,
-				allowNull: false
+				allowNull: true
 			},
 			description: {
 				type: DataType.STRING,
-				allowNull: false
+				allowNull: true
 			},
 			test: {
 				type: DataType.TEXT,
-				allowNull: false
+				allowNull: true
 			},
 			isActive: {
 				type: DataType.BOOLEAN,
-				allowNull: false
+				allowNull: true
 			},
 			createdAt: {
 				allowNull: false,
