@@ -18,6 +18,7 @@ export function executeChallenge(userCode: string, challenge: Pick<Challenge, 'i
 	const vmOptions = {
 		timeout: 1000,
 		external: false,
+		fixAsync: true,
 		sandbox: {
 			assertTestCases: assertTestCases
 		}
