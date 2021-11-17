@@ -11,7 +11,7 @@
 		"migrate-db": "npx sequelize db:migrate",
 		"demigrate-db": "npx sequelize db:migrate:undo:all",
 		"start": "npm run compile && node ./src/app.js",
-		"mocha": "./node_modules/.bin/mocha --exit --require ts-node/register ./test/src/*.ts",
+		"mocha": "cross-env NODE_ENV=test ./node_modules/.bin/mocha --exit --require ts-node/register ./test/src/*.ts",
 		"test": "npm run prepare-environment && npm run mocha"
 	},
 	"author": "",
