@@ -5,7 +5,7 @@
 	"main": "index.js",
 	"scripts": {
 		"compile": "tsc -p tsconfig.json",
-		"prepare-environment": "npm run stop-postgres && npm run start-postgres && wait-on tcp:5432 -l -i 1000 -d 1000 && cross-env NODE_ENV=development npm run migrate-db",
+		"prepare-environment": "npm run stop-postgres && npm run start-postgres && wait-on tcp:5432 -l -i 1000 -d 1000 && cross-env NODE_ENV=development npm run migrate-db && npm run seed-db",
 		"start-postgres": "docker-compose up -d",
 		"stop-postgres": "docker-compose rm --stop --force",
 		"migrate-db": "npx sequelize db:migrate",
