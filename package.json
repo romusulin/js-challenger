@@ -5,11 +5,11 @@
 	"main": "index.js",
 	"scripts": {
 		"compile": "tsc -p tsconfig.json",
-		"prepare-environment": "npm run stop-postgres && npm run start-postgres && wait-on tcp:5432 -l -i 1000 -d 1000 && cross-env NODE_ENV=development npm run migrate-db && npm run seed-db",
+		"prepare-environment": "npm run stop-postgres && npm run start-postgres && wait-on tcp:5432 -l -i 1000 -d 1000 && cross-env NODE_ENV=test npm run migrate-db && npm run seed-db",
 		"start-postgres": "docker-compose up -d",
 		"stop-postgres": "docker-compose rm --stop --force",
 		"migrate-db": "npx sequelize db:migrate",
-    "seed-db": "npx sequelize db:seed:all",
+		"seed-db": "npx sequelize db:seed:all",
 		"demigrate-db": "npx sequelize db:migrate:undo:all",
 		"start": "npm run compile && node ./src/run-app.js",
 		"mocha": "cross-env NODE_ENV=test ./node_modules/.bin/mocha --exit --require ts-node/register ./test/src/*.ts",
@@ -39,5 +39,8 @@
 		"typescript": "^3.6.4",
 		"vm2": "^3.8.4",
 		"wait-on": "^3.3.0"
+	},
+	"engines": {
+		"node": "v10.15.3"
 	}
 }
